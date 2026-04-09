@@ -27,7 +27,7 @@ const User = () => {
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [deleteUsersDialog, setDeleteUsersDialog] = useState(false);
     const [user, setUser] = useState<Project.User>(emptyUser);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUsers, setSelectedUsers] = useState<Project.User[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
@@ -35,14 +35,14 @@ const User = () => {
     const userService = new UserService();
 
     useEffect(() => {
-        if(users.length == 0) {
+        if (users.length == 0) {
             userService.listAllUsers()
-            .then((response) => {
-            console.log(response.data)
-            setUsers(response.data)
-            }).catch((error) => {
-                console.log(error)
-            });
+                .then((response) => {
+                    console.log(response.data)
+                    setUsers(response.data)
+                }).catch((error) => {
+                    console.log(error)
+                });
         }
     }, [user]);
 
@@ -68,45 +68,47 @@ const User = () => {
     const saveUser = () => {
         setSubmitted(true);
 
-        if(!user.id) {
+        if (!user.id) {
             userService.insertUser(user)
-            .then((response) => {
-                setUserDialog(false);
-                setUser(emptyUser);
-                setUsers([]);
-                setUsers(response.data);
-                toast.current?.show({
-                    severity: 'info',
-                    summary: 'Info',
-                    detail: 'User registred successfully'
+                .then((response) => {
+                    setUserDialog(false);
+                    setUser(emptyUser);
+                    setUsers([]);
+                    setUsers(response.data);
+                    toast.current?.show({
+                        severity: 'info',
+                        summary: 'Info',
+                        detail: 'User registred successfully'
+                    })
+                }).catch((error) => {
+                    const errorMessage = error?.response?.data?.message || error?.message || "Unknown error";
+                    console.log(errorMessage)
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Error!',
+                        detail: 'Error while registering: ' + errorMessage
+                    })
                 })
-            }).catch((error) => {
-                console.log(error.data.message)
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error!',
-                    detail: 'Error while registring' + error.data.message
-                })
-            })
         } else {
             userService.updateUser(user)
-            .then((response) => {
-                setUserDialog(false)
-                setUser(emptyUser)
-                setUsers([]);
-                toast.current?.show({
-                    severity: 'info',
-                    summary: 'Info',
-                    detail: 'User updated successfully'
+                .then((response) => {
+                    setUserDialog(false)
+                    setUser(emptyUser)
+                    setUsers([]);
+                    toast.current?.show({
+                        severity: 'info',
+                        summary: 'Info',
+                        detail: 'User updated successfully'
+                    })
+                }).catch((error) => {
+                    const errorMessage = error?.response?.data?.message || error?.message || "Unknown error";
+                    console.log(errorMessage)
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Error!',
+                        detail: 'Error while updating: ' + errorMessage
+                    })
                 })
-            }).catch((error) => {
-                console.log(error.data.message)
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error!',
-                    detail: 'Error while registring' + error.data.message
-                })
-            })
         }
     };
 
@@ -124,34 +126,24 @@ const User = () => {
         if (!user.id) return;
 
         userService.deleteUser(user.id)
-        .then((response) => {
-            setUser(emptyUser);
-            setDeleteUserDialog(false);
-            setUsers([]);
-            toast.current?.show({
-                severity: 'success',
-                summary: 'Successful',
-                detail: 'User Deleted',
-                life: 3000
-            });
-        }).catch((error) => {
-            toast.current?.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Error while deleting user',
-                life: 3000
-            });
-        })
-        // let _users = (users as any)?.filter((val: any) => val.id !== user.id);
-        // setUser(_users);
-        // setDeleteUsersDialog(false);
-        // setUser(emptyUser);
-        // toast.current?.show({
-        //     severity: 'success',
-        //     summary: 'Successful',
-        //     detail: 'Product Deleted',
-        //     life: 3000
-        // });
+            .then((response) => {
+                setUser(emptyUser);
+                setDeleteUserDialog(false);
+                setUsers([]);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'User Deleted',
+                    life: 3000
+                });
+            }).catch((error) => {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error while deleting user',
+                    life: 3000
+                });
+            })
     };
 
     const findIndexById = (id: string) => {
@@ -184,15 +176,27 @@ const User = () => {
     };
 
     const deleteSelectedUsers = () => {
-        let _users = (users as any)?.filter((val: any) => !(selectedUser as any)?.includes(val));
-        setUser(_users);
-        setDeleteUsersDialog(false);
-        setSelectedUser(null);
-        toast.current?.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Products Deleted',
-            life: 3000
+        Promise.all(selectedUsers.map(async (_user) => {
+            if (_user.id) {
+                await userService.deleteUser(_user.id)
+            }
+        })).then((response) => {
+            setUsers([]);
+            setSelectedUsers([]);
+            setDeleteUsersDialog(false);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Users Deleted',
+                life: 3000
+            });
+        }).catch((error) => {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error while deleting users',
+                life: 3000
+            })
         });
     };
 
@@ -205,20 +209,12 @@ const User = () => {
         setUser(_user);
     };
 
-    // const onInputNumberChange = (e: InputNumberValueChangeEvent, name: string) => {
-    //     const val = e.value || 0;
-    //     let _product = { ...product };
-    //     _product[`${name}`] = val;
-
-    //     setProduct(_product);
-    // };
-
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
                     <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedUser || !(selectedUser as any).length} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedUsers || !(selectedUsers as any).length} />
                 </div>
             </React.Fragment>
         );
@@ -251,7 +247,7 @@ const User = () => {
         );
     };
 
-        const loginBodyTemplate = (rowData: Project.User) => {
+    const loginBodyTemplate = (rowData: Project.User) => {
         return (
             <>
                 <span className="p-column-title">Login</span>
@@ -260,7 +256,7 @@ const User = () => {
         );
     };
 
-        const emailBodyTemplate = (rowData: Project.User) => {
+    const emailBodyTemplate = (rowData: Project.User) => {
         return (
             <>
                 <span className="p-column-title">Email</span>
@@ -269,7 +265,7 @@ const User = () => {
         );
     };
 
-    const actionBodyTemplate = (rowData: Project.User ) => {
+    const actionBodyTemplate = (rowData: Project.User) => {
         return (
             <>
                 <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editUser(rowData)} />
@@ -317,8 +313,8 @@ const User = () => {
                     <DataTable
                         ref={dt}
                         value={users}
-                        selection={selectedUser}
-                        onSelectionChange={(e) => setSelectedUser(e.value as any)}
+                        selection={selectedUsers}
+                        onSelectionChange={(e) => setSelectedUsers(e.value as any)}
                         dataKey="id"
                         paginator
                         rows={10}
