@@ -80,14 +80,14 @@ const User = () => {
                 setUser(emptyUser);
                 setUsers([]);
                 setUsers(response.data);
-                toast.current.show({
+                toast.current?.show({
                     severity: 'info',
                     summary: 'Info',
                     detail: 'User registred successfully'
                 })
             }).catch((error) => {
                 console.log(error.data.message)
-                toast.current.show({
+                toast.current?.show({
                     severity: 'error',
                     summary: 'Error!',
                     detail: 'Error while registring' + error.data.message
@@ -99,14 +99,14 @@ const User = () => {
                 setUserDialog(false)
                 setUser(emptyUser)
                 setUsers([]);
-                toast.current.show({
+                toast.current?.show({
                     severity: 'info',
                     summary: 'Info',
                     detail: 'User updated successfully'
                 })
             }).catch((error) => {
                 console.log(error.data.message)
-                toast.current.show({
+                toast.current?.show({
                     severity: 'error',
                     summary: 'Error!',
                     detail: 'Error while registring' + error.data.message
@@ -126,6 +126,8 @@ const User = () => {
     };
 
     const deleteUser = () => {
+        if (!user.id) return;
+
         userService.deleteUser(user.id)
         .then((response) => {
             setUser(emptyUser);
@@ -203,7 +205,7 @@ const User = () => {
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
         let _user = { ...user };
-        _user[`${name}`] = val;
+        (_user as any)[name] = val;
 
         setUser(_user);
     };
