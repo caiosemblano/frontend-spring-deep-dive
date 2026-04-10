@@ -178,12 +178,13 @@ const User = () => {
     const deleteSelectedUsers = () => {
         Promise.all(selectedUsers.map(async (_user) => {
             if (_user.id) {
-                await userService.deleteUser(_user.id)
+                return await userService.deleteUser(_user.id);
             }
         })).then((response) => {
             setUsers([]);
             setSelectedUsers([]);
             setDeleteUsersDialog(false);
+            setUser(emptyUser); // Gatilho para o useEffect recarregar a lista
             toast.current?.show({
                 severity: 'success',
                 summary: 'Successful',
