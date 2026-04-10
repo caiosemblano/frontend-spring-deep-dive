@@ -6,4 +6,10 @@ declare namespace Project {
         email: string
         password: string
     }
+
+    type Resource = {
+        id?: number,
+        name: string
+        key: string
+    }
 }
