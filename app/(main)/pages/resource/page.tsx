@@ -71,8 +71,7 @@ const Resource = () => {
                 .then((response) => {
                     setResourceDialog(false);
                     setResource(emptyResource);
-                    setResources([]);
-                    setResources(response.data);
+                    resourceService.listAll().then((res) => setResources(res.data));
                     toast.current?.show({
                         severity: 'info',
                         summary: 'Info',
@@ -92,7 +91,7 @@ const Resource = () => {
                 .then((response) => {
                     setResourceDialog(false)
                     setResource(emptyResource)
-                    setResources([]);
+                    resourceService.listAll().then((res) => setResources(res.data));
                     toast.current?.show({
                         severity: 'info',
                         summary: 'Info',
