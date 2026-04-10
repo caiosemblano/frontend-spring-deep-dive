@@ -16,8 +16,8 @@ import React, { useEffect, useRef, useState } from 'react';
 const Resource = () => {
     let emptyResource: Project.Resource = {
         id: 0,
-        nome: '',
-        chave: ''
+        name: '',
+        key: ''
     };
 
     const [resources, setResources] = useState<Project.Resource[]>([]);
@@ -237,20 +237,20 @@ const Resource = () => {
         );
     };
 
-    const nomeBodyTemplate = (rowData: Project.Resource) => {
+    const nameBodyTemplate = (rowData: Project.Resource) => {
         return (
             <>
-                <span className="p-column-title">Nome</span>
-                {rowData.nome}
+                <span className="p-column-title">Name</span>
+                {rowData.name}
             </>
         );
     };
 
-    const chaveBodyTemplate = (rowData: Project.Resource) => {
+    const keyBodyTemplate = (rowData: Project.Resource) => {
         return (
             <>
-                <span className="p-column-title">Chave</span>
-                {rowData.chave}
+                <span className="p-column-title">Key</span>
+                {rowData.key}
             </>
         );
     };
@@ -319,39 +319,39 @@ const Resource = () => {
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column field="id" header="Code" sortable body={idBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="nome" header="Nome" sortable body={nomeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="chave" header="Chave" sortable body={chaveBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
+                        <Column field="key" header="Key" sortable body={keyBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
                     <Dialog visible={resourceDialog} style={{ width: '450px' }} header="Resource Details" modal className="p-fluid" footer={resourceDialogFooter} onHide={hideDialog}>
                         <div className="field">
-                            <label htmlFor="nome">Nome</label>
+                            <label htmlFor="name">Name</label>
                             <InputText
-                                id="nome"
-                                value={resource.nome}
-                                onChange={(e) => onInputChange(e, 'nome')}
+                                id="name"
+                                value={resource.name}
+                                onChange={(e) => onInputChange(e, 'name')}
                                 required
                                 autoFocus
                                 className={classNames({
-                                    'p-invalid': submitted && !resource.nome
+                                    'p-invalid': submitted && !resource.name
                                 })}
                             />
-                            {submitted && !resource.nome && <small className="p-invalid">Nome is required.</small>}
+                            {submitted && !resource.name && <small className="p-invalid">Nome is required.</small>}
                         </div>
 
                         <div className="field">
-                            <label htmlFor="chave">Chave</label>
+                            <label htmlFor="key">Key</label>
                             <InputText
-                                id="chave"
-                                value={resource.chave}
-                                onChange={(e) => onInputChange(e, 'chave')}
+                                id="key"
+                                value={resource.key}
+                                onChange={(e) => onInputChange(e, 'key')}
                                 required
                                 className={classNames({
-                                    'p-invalid': submitted && !resource.chave
+                                    'p-invalid': submitted && !resource.key
                                 })}
                             />
-                            {submitted && !resource.chave && <small className="p-invalid">Chave is required.</small>}
+                            {submitted && !resource.key && <small className="p-invalid">Chave is required.</small>}
                         </div>
                     </Dialog>
 
@@ -360,7 +360,7 @@ const Resource = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {resource && (
                                 <span>
-                                    Are you sure you want to delete the resource <b>{resource.nome}</b>?
+                                    Are you sure you want to delete the resource <b>{resource.name}</b>?
                                 </span>
                             )}
                         </div>
