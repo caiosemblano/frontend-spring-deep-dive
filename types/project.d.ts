@@ -12,4 +12,9 @@ declare namespace Project {
         name: string
         key: string
     }
+
+    type Profile = {
+        id?: number,
+        description: string
+    }
 }
