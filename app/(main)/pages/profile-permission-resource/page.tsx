@@ -27,8 +27,7 @@ const ProfilePermissionResource = () => {
             id: 0,
             name: '',
             key: ''
-        },
-        permission: ''
+        }
     };
 
     const [profilePermissionResources, setProfilePermissionResources] = useState<Project.ProfilePermissionResource[]>([]);
@@ -196,13 +195,7 @@ const ProfilePermissionResource = () => {
         });
     };
 
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
-        const val = (e.target && e.target.value) || '';
-        let _obj = { ...profilePermissionResource };
-        (_obj as any)[name] = val;
 
-        setProfilePermissionResource(_obj);
-    };
 
     const onSelectChange = (e: any, name: string) => {
         const val = e.value;
@@ -259,14 +252,7 @@ const ProfilePermissionResource = () => {
         );
     };
     
-    const permissionBodyTemplate = (rowData: Project.ProfilePermissionResource) => {
-        return (
-            <>
-                <span className="p-column-title">Permission</span>
-                {rowData.permission}
-            </>
-        );
-    };
+
 
     const actionBodyTemplate = (rowData: Project.ProfilePermissionResource) => {
         return (
@@ -336,7 +322,6 @@ const ProfilePermissionResource = () => {
                         <Column field="id" header="Code" sortable body={idBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="profile.description" header="Profile" sortable body={profileBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="resource.name" header="Resource" sortable body={resourceBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="permission" header="Permission" sortable body={permissionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
@@ -374,20 +359,6 @@ const ProfilePermissionResource = () => {
                                 })}
                             />
                             {submitted && (!profilePermissionResource.resource || !profilePermissionResource.resource.id) && <small className="p-invalid">Resource is required.</small>}
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="permission">Permission</label>
-                            <InputText
-                                id="permission"
-                                value={profilePermissionResource.permission}
-                                onChange={(e) => onInputChange(e, 'permission')}
-                                required
-                                className={classNames({
-                                    'p-invalid': submitted && !profilePermissionResource.permission
-                                })}
-                            />
-                            {submitted && !profilePermissionResource.permission && <small className="p-invalid">Permission is required.</small>}
                         </div>
                     </Dialog>
 

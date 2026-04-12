@@ -27,7 +27,6 @@ declare namespace Project {
     type ProfilePermissionResource = {
         id?: number,
         profile: Profile,
-        resource: Resource,
-        permission: string // e.g. "READ", "WRITE", etc. (assuming it's a string, or it could be an entity)
+        resource: Resource
     }
 }
