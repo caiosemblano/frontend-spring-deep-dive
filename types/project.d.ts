@@ -1,20 +1,33 @@
 declare namespace Project {
     type User = {
         id?: number,
-        name: string
-        login: string
-        email: string
+        name: string,
+        login: string,
+        email: string,
         password: string
     }
 
     type Resource = {
         id?: number,
-        name: string
+        name: string,
         key: string
     }
 
     type Profile = {
         id?: number,
         description: string
+    }
+
+    type ProfileUser = {
+        id?: number,
+        profile: Profile,
+        user: User
+    }
+
+    type ProfilePermissionResource = {
+        id?: number,
+        profile: Profile,
+        resource: Resource,
+        permission: string // e.g. "READ", "WRITE", etc. (assuming it's a string, or it could be an entity)
     }
 }
